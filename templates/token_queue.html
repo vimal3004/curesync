@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Token Queue - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook Admin</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('admin_panel') }}">Dashboard</a>
+                <a href="{{ url_for('token_queue') }}">Token Queue</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="token-main-wrapper">
+        <div class="token-page-container">
+            <h1 class="token-page-heading">Live Token Queue</h1>
+
+            <form method="POST" class="token-date-form">
+                <label for="selected_date"><strong>Select Date:</strong></label>
+                <input type="date" id="selected_date" name="selected_date" value="{{ selected_date }}">
+                <button type="submit" class="token-submit-btn">Filter</button>
+            </form>
+
+            {% for doctor, appointments in token_data.items() %}
+                <div class="token-doctor-section">
+                    <h2 class="token-doctor-name">Dr. {{ doctor }}</h2>
+                    {% if appointments %}
+                        <div class="token-table-wrapper">
+                            <table class="token-table">
+                                <thead>
+                                    <tr>
+                                        <th>Token</th>
+                                        <th>Patient</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a in appointments %}
+                                        <tr>
+                                            <td>{{ a.token_number }}</td>
+                                            <td>{{ a.patient_name }}</td>
+                                            <td>{{ a.appointment_time }}</td>
+                                            <td><span class="token-status token-status-{{ a.status }}">{{ a.status.title() }}</span></td>
+                                            <td>{{ a.notes or '' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="token-no-data">No appointments found for this date.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                <span>Welcome, {{ session.user_name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="payment-container">
+            <h2>Payment</h2>
+            
+            <div class="payment-summary">
+                <h3>Appointment Summary</h3>
+                <div class="summary-card">
+                    <p><strong>Doctor:</strong> {{ appointment.doctor_name }}</p>
+                    <p><strong>Specialization:</strong> {{ appointment.specialization }}</p>
+                    <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                    <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                    <p><strong>Room:</strong> {{ appointment.room_number or 'TBD' }}</p>
+                    <hr>
+                    <p><strong>Consultation Fee:</strong> ₹{{ appointment.fee }}</p>
+                    <p><strong>Total Amount:</strong> ₹{{ appointment.fee }}</p>
+                </div>
+            </div>
+
+            <div class="payment-form">
+                <h3>Payment Details</h3>
+                <form method="POST" action="{{ url_for('process_payment') }}">
+                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                    
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method:</label>
+                        <select id="payment_method" name="payment_method" required>
+                            <option value="">Select payment method</option>
+                            <option value="credit_card">Credit Card</option>
+                            <option value="debit_card">Debit Card</option>
+                            <option value="upi">UPI</option>
+                            <option value="net_banking">Net Banking</option>
+                        </select>
+                    </div>
+
+                    <div id="card-details" class="payment-details" style="display: none;">
+                        <div class="form-group">
+                            <label for="card_number">Card Number:</label>
+                            <input type="text" id="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date:</label>
+                                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV:</label>
+                                <input type="password" id="cvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="upi-details" class="payment-details" style="display: none;">
+                        <div class="form-group">
+                            <label for="upi_id">UPI ID:</label>
+                            <input type="text" id="upi_id" placeholder="yourname@upi">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Pay ₹{{ appointment.fee }}</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('payment_method').addEventListener('change', function() {
+            const method = this.value;
+            const cardDetails = document.getElementById('card-details');
+            const upiDetails = document.getElementById('upi-details');
+            
+            // Hide all payment details
+            cardDetails.style.display = 'none';
+            upiDetails.style.display = 'none';
+            
+            // Show relevant payment details
+            if (method === 'credit_card' || method === 'debit_card') {
+                cardDetails.style.display = 'block';
+            } else if (method === 'upi') {
+                upiDetails.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

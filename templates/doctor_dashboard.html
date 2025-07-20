@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Doctor Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="doctor-dashboard-container">
+        <h1 class="doctor-dashboard-heading">Welcome, Dr. {{ session.doctor_name }}</h1>
+        <h3 class="doctor-dashboard-subheading">Today's Appointments</h3>
+
+        {% if appointments %}
+        <div class="doctor-dashboard-table-wrapper">
+            <table class="doctor-dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Room</th>
+                        <th>Upload Notes</th>
+                        <th>View Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in appointments %}
+                    <tr>
+                        <td>{{ a.user_name }}</td>
+                        <td>{{ a.appointment_time }}</td>
+                        <td>{{ a.notes or '-' }}</td>
+                        <td>{{ a.room_number }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('upload_notes', appointment_id=a.id) }}" enctype="multipart/form-data" class="doctor-dashboard-form">
+                                <input type="file" name="notes_file" accept=".pdf,.jpg,.png" class="doctor-dashboard-file">
+                                <button type="submit" class="doctor-dashboard-upload-btn">Upload</button>
+                            </form>
+                        </td>
+                        <td>
+                            {% if a.doctor_notes %}
+                                <a href="{{ url_for('static', filename='uploads/' ~ a.doctor_notes) }}" target="_blank" class="doctor-dashboard-view-link">View</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p class="doctor-dashboard-no-appointments">No appointments today.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

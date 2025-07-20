@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Doctor Login - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="doctor-login-container">
+        <h2 class="doctor-login-title">Doctor Login</h2>
+        <form method="POST" class="doctor-login-form">
+            <input type="email" name="email" class="doctor-login-input" placeholder="Email" required>
+            <input type="password" name="password" class="doctor-login-input" placeholder="Password" required>
+            <button type="submit" class="doctor-login-btn">Login</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="doctor-login-alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>
+

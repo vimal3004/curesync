@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MedBook - Healthcare Management{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-heartbeat"></i>
+                <span>MedBook Pro</span>
+            </div>
+            <div class="nav-links">
+                {% if session.user_id %}
+                    {% if session.is_admin %}
+                        <a href="{{ url_for('admin_panel') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="{{ url_for('analytics') }}"><i class="fas fa-chart-bar"></i> Analytics</a>
+                        <a href="{{ url_for('inventory') }}"><i class="fas fa-boxes"></i> Inventory</a>
+                        <a href="{{ url_for('doctors') }}"><i class="fas fa-user-md"></i> Doctors</a>
+                        <a href="{{ url_for('rooms') }}"><i class="fas fa-door-open"></i> Rooms</a>
+                    {% else %}
+                        <a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+                        <a href="{{ url_for('appointment') }}"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
+                        <a href="{{ url_for('health_records') }}"><i class="fas fa-file-medical"></i> Health Records</a>
+                        <a href="{{ url_for('prescriptions') }}"><i class="fas fa-pills"></i> Prescriptions</a>
+                        <a href="{{ url_for('messaging') }}"><i class="fas fa-comments"></i> Messages</a>
+                        <a href="{{ url_for('telemedicine') }}"><i class="fas fa-video"></i> Telemedicine</a>
+                        <a href="{{ url_for('lab_tests') }}"><i class="fas fa-flask"></i> Lab Tests</a>
+                    {% endif %}
+                    <div class="nav-user">
+                        <div class="notification-bell" onclick="toggleNotifications()">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-count" id="notificationCount">0</span>
+                        </div>
+                        <div class="user-menu">
+                            <span><i class="fas fa-user"></i> {{ session.user_name }}</span>
+                            <div class="dropdown">
+                                <a href="{{ url_for('profile') }}"><i class="fas fa-user-edit"></i> Profile</a>
+                                <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif session.doctor_id %}
+                    <a href="{{ url_for('doctor_dashboard') }}"><i class="fas fa-stethoscope"></i> Dashboard</a>
+                    <a href="{{ url_for('doctor_patients') }}"><i class="fas fa-users"></i> Patients</a>
+                    <a href="{{ url_for('doctor_messaging') }}"><i class="fas fa-comments"></i> Messages</a>
+                    <div class="nav-user">
+                        <span><i class="fas fa-user-md"></i> {{ session.doctor_name }}</span>
+                        <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a>
+                    <a href="{{ url_for('doctors') }}"><i class="fas fa-user-md"></i> Doctors</a>
+                    <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{{ url_for('doctor_login') }}"><i class="fas fa-user-md"></i> Doctor Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification Panel -->
+    <div id="notificationPanel" class="notification-panel">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button onclick="toggleNotifications()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="notificationList" class="notification-list">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        {{ message }}
+                        <button onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>MedBook Pro</h4>
+                <p>Advanced Healthcare Management System</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="{{ url_for('appointment') }}">Book Appointment</a>
+            </div>
+            <div class="footer-section">
+                <h4>Contact</h4>
+                <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> info@medbook.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MedBook Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

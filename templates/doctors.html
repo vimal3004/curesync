@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook</h1>
+            <div class="nav-links">
+                {% if session.user_id %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                    <a href="{{ url_for('doctors') }}">Doctors</a>
+                    <span>Welcome, {{ session.user_name }}!</span>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('home') }}">Home</a>
+                    <a href="{{ url_for('doctors') }}">Doctors</a>
+                    <a href="{{ url_for('rooms') }}">Rooms</a>
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="doctors-container">
+            <h1>Our Doctors</h1>
+            
+            <div class="doctors-grid">
+                {% for doctor in doctors %}
+                    <div class="doctor-card">
+                        <div class="doctor-header">
+                            <h3>{{ doctor.name }}</h3>
+                            <span class="specialization">{{ doctor.specialization }}</span>
+                        </div>
+                        <div class="doctor-details">
+                            <p><strong>Experience:</strong> {{ doctor.experience }} years</p>
+                            <p><strong>Consultation Fee:</strong> ₹{{ doctor.fee }}</p>
+                            <p><strong>Available Days:</strong> {{ doctor.available_days }}</p>
+                            <p><strong>Available Time:</strong> {{ doctor.available_time }}</p>
+                            <p><strong>Room:</strong> {{ doctor.room_number or 'TBD' }}</p>
+                        </div>
+                        <div class="doctor-actions">
+                            {% if session.user_id %}
+                                <a href="{{ url_for('appointment') }}" class="btn btn-primary">Book Appointment</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="btn btn-primary">Login to Book</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

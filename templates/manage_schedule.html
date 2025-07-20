@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Doctor Schedule - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook Admin</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('admin_panel') }}">Dashboard</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="{{ url_for('rooms') }}">Rooms</a>
+                <a href="{{ url_for('token_queue') }}">Live Token Queue</a>
+                <a href="{{ url_for('manage_schedule') }}">Doctor Schedules</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1>Manage Doctor Schedule</h1>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for msg in messages %}
+                            <p>{{ msg }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" class="form-group">
+                <div class="form-field">
+                    <label for="doctor_id">Select Doctor:</label>
+                    <select name="doctor_id" required>
+                        <option value="">-- Choose a Doctor --</option>
+                        {% for doctor in doctors %}
+                            <option value="{{ doctor.id }}">{{ doctor.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="available_days">Available Days (e.g. Mon,Wed,Fri):</label>
+                    <input type="text" name="available_days" placeholder="e.g. Mon,Wed,Fri" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="available_time">Available Time (e.g. 09:00-17:00):</label>
+                    <input type="text" name="available_time" placeholder="e.g. 09:00-17:00" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Update Schedule</button>
+                    <a href="{{ url_for('admin_panel') }}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 MedBook. All rights reserved.</p>
+    </footer>
+</body>
+</html>

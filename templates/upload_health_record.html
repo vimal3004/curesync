@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Health Record - MedBook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .appointment-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .appointment-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .upload-section {
+            background: #fff;
+            border: 2px dashed #4facfe;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #00f2fe;
+            background: #f8f9fa;
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            color: #4facfe;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .file-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        .records-section {
+            margin-top: 30px;
+        }
+
+        .records-section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .record-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #4facfe;
+        }
+
+        .record-info {
+            flex: 1;
+        }
+
+        .record-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .record-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .view-btn {
+            background: #4facfe;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .view-btn:hover {
+            background: #00f2fe;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1em;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 10px;
+        }
+
+        .flash-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 10px;
+        }
+
+        .selected-file {
+            color: #4facfe;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .info-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Health Records</h1>
+            <p>Upload your medical documents and reports</p>
+        </div>
+
+        <div class="content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for message in messages %}
+                            <div class="flash-success">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Appointment Information -->
+            <div class="appointment-info">
+                <h3>📅 Appointment Details</h3>
+                <div class="info-row">
+                    <span class="info-label">Doctor:</span>
+                    <span class="info-value">{{ appointment.doctor_name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Specialization:</span>
+                    <span class="info-value">{{ appointment.specialization }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Date:</span>
+                    <span class="info-value">{{ appointment.appointment_date }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Time:</span>
+                    <span class="info-value">{{ appointment.appointment_time }}</span>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <form method="POST" enctype="multipart/form-data">
+                <div class="upload-section">
+                    <div class="upload-icon">📁</div>
+                    <h3>Upload Health Records</h3>
+                    <p>Upload your medical reports, prescriptions, or test results</p>
+                    
+                    <input type="file" name="health_file" id="health_file" class="file-input" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onchange="showFileName()">
+                    <label for="health_file" class="file-label">Choose File</label>
+                    
+                    <div class="file-info">
+                        Supported formats: PDF, JPG, PNG, DOC, DOCX (Max 10MB)
+                    </div>
+                    
+                    <div id="selected-file" class="selected-file" style="display: none;"></div>
+                    
+                    <button type="submit" class="upload-btn">Upload Record</button>
+                </div>
+            </form>
+
+            <!-- Existing Records -->
+            {% if records %}
+            <div class="records-section">
+                <h3>📂 Uploaded Records</h3>
+                {% for record in records %}
+                <div class="record-item">
+                    <div class="record-info">
+                        <div class="record-name">{{ record.filename }}</div>
+                        <div class="record-date">Uploaded on: {{ record.uploaded_at }}</div>
+                    </div>
+                    <a href="{{ url_for('static', filename='health_records/' + record.filename) }}" 
+                       target="_blank" class="view-btn">View</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <a href="{{ url_for('dashboard') }}" class="back-btn">← Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        function showFileName() {
+            const fileInput = document.getElementById('health_file');
+            const selectedFileDiv = document.getElementById('selected-file');
+            
+            if (fileInput.files.length > 0) {
+                selectedFileDiv.textContent = 'Selected: ' + fileInput.files[0].name;
+                selectedFileDiv.style.display = 'block';
+            } else {
+                selectedFileDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

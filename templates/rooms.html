@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rooms - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}">Home</a>
+                {% if session.user_id %}
+                    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                {% endif %}
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="{{ url_for('rooms') }}">Rooms</a>
+                {% if session.user_id %}
+                    <span>Welcome, {{ session.user_name }}!</span>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="rooms-container">
+            <h1>Our Facilities</h1>
+            
+            {% if rooms %}
+                <div class="rooms-grid">
+                    {% for room in rooms %}
+                        <div class="room-card">
+                            <div class="room-header">
+                                <h3>Room {{ room.room_number }}</h3>
+                                <span class="status status-{{ room.status }}">{{ room.status.title() }}</span>
+                            </div>
+                            <div class="room-details">
+                                <p><strong>Type:</strong> {{ room.room_type }}</p>
+                                <p><strong>Capacity:</strong> {{ room.capacity }} persons</p>
+                                <p><strong>Facilities:</strong> {{ room.facilities }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No rooms available.</p>
+            {% endif %}
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 MedBook. All rights reserved.</p>
+    </footer>
+</body>
+</html>

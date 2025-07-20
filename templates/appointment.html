@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-brand">MedBook</h1>
+        <div class="nav-links">
+            {% if session.user_id %}
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <span>Welcome, {{ session.user_name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            {% else %}
+                <a href="{{ url_for('home') }}">Home</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="{{ url_for('login') }}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<main class="main-content">
+    <div class="appointment-container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% if not session.user_id %}
+            <div class="auth-required">
+                <h2>Please Login</h2>
+                <p>You need to login to book an appointment.</p>
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+            </div>
+
+        {% elif step == 'confirm' %}
+            <div class="confirmation-section">
+                <h2>Confirm Your Appointment</h2>
+                <div class="appointment-summary">
+                    <h3>Appointment Details</h3>
+                    <p><strong>Patient:</strong> {{ session.user_name }}</p>
+                    <p><strong>Doctor:</strong> {{ appointment.doctor_name }}</p>
+                    <p><strong>Specialization:</strong> {{ appointment.specialization }}</p>
+                    <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                    <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                    <p><strong>Room:</strong> {{ appointment.room_number or 'TBD' }}</p>
+                    <p><strong>Consultation Fee:</strong> ₹{{ appointment.fee }}</p>
+                    <p><strong>Token Number:</strong> {{ appointment.token_number }}</p>
+                    {% if appointment.notes %}
+                        <p><strong>Notes:</strong> {{ appointment.notes }}</p>
+                    {% endif %}
+                </div>
+
+                <form method="POST" action="{{ url_for('appointment') }}">
+                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                    <div class="form-actions">
+                        <button type="submit" name="confirm_booking" class="btn btn-primary">Confirm & Proceed to Payment</button>
+                        <a href="{{ url_for('appointment') }}" class="btn btn-secondary">Back to Booking</a>
+                    </div>
+                </form>
+            </div>
+
+        {% else %}
+            <div class="booking-section">
+                <h2>Book an Appointment</h2>
+                <p><strong>Patient Name:</strong> {{ session.user_name }}</p>
+                
+                <form method="POST" action="{{ url_for('appointment') }}">
+                    <!-- Hidden input to pass patient name (optional) -->
+                    <input type="hidden" name="patient_name" value="{{ session.user_name }}">
+
+                    <div class="form-group">
+                        <label for="doctor_id">Select Doctor:</label>
+                        <select id="doctor_id" name="doctor_id" onchange="updateDoctorInfo()" required>
+                            <option value="">-- Choose a Doctor --</option>
+                            {% for doctor in doctors %}
+                                <option value="{{ doctor.id }}"
+                                        data-specialization="{{ doctor.specialization }}"
+                                        data-fee="{{ doctor.fee }}"
+                                        data-days="{{ doctor.available_days }}"
+                                        data-time="{{ doctor.available_time }}">
+                                    Dr. {{ doctor.name }} ({{ doctor.specialization }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div id="doctor-info" class="doctor-info" style="display: none;">
+                        <h3>Doctor Information</h3>
+                        <p><strong>Specialization:</strong> <span id="info-specialization"></span></p>
+                        <p><strong>Fee:</strong> ₹<span id="info-fee"></span></p>
+                        <p><strong>Available Days:</strong> <span id="info-days"></span></p>
+                        <p><strong>Available Time:</strong> <span id="info-time"></span></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointment_date">Date:</label>
+                        <input type="date" name="appointment_date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointment_time">Time:</label>
+                        <input type="time" name="appointment_time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (Optional):</label>
+                        <textarea id="notes" name="notes" rows="3" placeholder="Any specific concerns or requirements..."></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" name="book_appointment" class="btn btn-primary">Book Appointment</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</main>
+
+<script>
+    function updateDoctorInfo() {
+        const select = document.getElementById('doctor_id');
+        const info = document.getElementById('doctor-info');
+        const option = select.options[select.selectedIndex];
+
+        if (option.value) {
+            document.getElementById('info-specialization').textContent = option.dataset.specialization;
+            document.getElementById('info-fee').textContent = option.dataset.fee;
+            document.getElementById('info-days').textContent = option.dataset.days;
+            document.getElementById('info-time').textContent = option.dataset.time;
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>

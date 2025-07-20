@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <span>Welcome, {{ session.user_name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="dashboard-container">
+            <h1>My Dashboard</h1>
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="dashboard-actions">
+                <a href="{{ url_for('appointment') }}" class="btn btn-primary">Book New Appointment</a>
+            </div>
+
+            <div class="appointments-section">
+                <h2>My Appointments</h2>
+                {% if appointments %}
+                    <div class="appointments-grid">
+                        {% for appointment in appointments %}
+                            <div class="appointment-card">
+                                <div class="appointment-header">
+                                    <h3>{{ appointment.doctor_name }}</h3>
+                                    <span class="status status-{{ appointment.status }}">{{ appointment.status.title() }}</span>
+                                </div>
+                                <div class="appointment-details">
+                                    <p><strong>Specialization:</strong> {{ appointment.specialization }}</p>
+                                    <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+                                    <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+                                    <p><strong>Room:</strong> {{ appointment.room_number or 'TBD' }}</p>
+                                    <p><strong>Payment:</strong> {{ appointment.payment_status.title() }}</p>
+
+                                    <!-- ✅ Add this line to show the token number -->
+                                    <p><strong>Token Number:</strong> {{ appointment.token_number }}</p>
+
+                                    {% if appointment.notes %}
+                                        <p><strong>Notes:</strong> {{ appointment.notes }}</p>
+                                    {% endif %}
+                                </div>
+                                <div class="appointment-actions">
+                                    {% if appointment.status == 'pending' %}
+                                        <a href="{{ url_for('cancel_appointment', appointment_id=appointment.id) }}" 
+                                           class="btn btn-danger btn-sm"
+                                           onclick="return confirm('Are you sure you want to cancel this appointment?')">
+                                            Cancel
+                                        </a>
+                                    {% endif %}
+                                    {% if appointment.payment_status == 'pending' %}
+                                        <a href="{{ url_for('payment', appointment_id=appointment.id) }}" 
+                                           class="btn btn-success btn-sm">
+                                            Pay Now
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>No appointments found. <a href="{{ url_for('appointment') }}">Book your first appointment</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

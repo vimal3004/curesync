@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook Admin</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('admin_panel') }}">Dashboard</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="{{ url_for('rooms') }}">Rooms</a>
+                <a href="{{ url_for('token_queue') }}">Live Token Queue</a>
+                <a href="{{ url_for('manage_schedule') }}">Manage Schedule</a>
+                <span>Welcome, {{ session.user_name }}!</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="admin-container">
+            <h1>Admin Dashboard</h1>
+
+            <!-- Date Filter Form -->
+            <form method="GET" action="{{ url_for('admin_panel') }}" class="form-inline" style="margin-bottom: 20px;">
+                <label for="filter_date"><strong>Select Date:</strong></label>
+                <input type="date" name="filter_date" id="filter_date" value="{{ selected_date }}" required>
+                <button type="submit" class="btn btn-primary">View</button>
+            </form>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Appointments</h3>
+                    <p class="stat-number">{{ stats.total_appointments }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Doctors</h3>
+                    <p class="stat-number">{{ stats.total_doctors }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Rooms</h3>
+                    <p class="stat-number">{{ stats.total_rooms }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p class="stat-number">{{ stats.total_users }}</p>
+                </div>
+            </div>
+
+            <!-- Appointments Table -->
+            <div class="recent-appointments">
+                <h2>Appointments for {{ selected_date or "Today" }}</h2>
+                {% if appointments %}
+                    <div class="appointments-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Token No.</th>
+                                    <th>Patient</th>
+                                    <th>Doctor</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Room</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th>Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for appointment in appointments %}
+                                    <tr>
+                                        <td>{{ appointment.token_number or '—' }}</td>
+                                        <td>{{ appointment.user_name }}</td>
+                                        <td>{{ appointment.doctor_name }}</td>
+                                        <td>{{ appointment.appointment_date }}</td>
+                                        <td>{{ appointment.appointment_time }}</td>
+                                        <td>{{ appointment.room_number or 'TBD' }}</td>
+                                        <td><span class="status status-{{ appointment.status }}">{{ appointment.status.title() }}</span></td>
+                                        <td><span class="status status-{{ appointment.payment_status }}">{{ appointment.payment_status.title() }}</span></td>
+                                        <td>{{ appointment.notes or '-' }}</td>
+                                        <td>
+                                        {% if appointment.doctor_notes %}
+                                           <a href="{{ url_for('static', filename='uploads/' ~ appointment.doctor_notes) }}" target="_blank">View</a>
+                                      {% else %}
+                                         -
+                                      {% endif %}
+                                      </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p>No appointments found for selected date.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>
