@@ -77,6 +77,8 @@ def init_db():
             status TEXT DEFAULT 'available'
         )
     ''')
+
+   
     
     cursor.execute('''
     CREATE TABLE IF NOT EXISTS appointments (
@@ -601,6 +603,8 @@ def upload_health_record(appointment_id):
     
     conn.close()
     return render_template('upload_health_record.html', appointment=appointment, records=records)
+
+
 
 @app.route('/view_health_records')
 def view_health_records():
