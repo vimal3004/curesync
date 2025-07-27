@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>curesync - Medical Appointment Booking</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <nav class="cs-navbar">
-        <div class="cs-nav-container">
-            <h1 class="cs-nav-brand">curesync</h1>
-            <div class="cs-nav-links">
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">curesync</h1>
+            <div class="nav-links">
                 <a href="{{ url_for('home') }}">Home</a>
                 <a href="{{ url_for('doctors') }}">Doctors</a>
                 <a href="{{ url_for('rooms') }}">Rooms</a>
@@ -20,149 +20,155 @@
         </div>
     </nav>
 
-    <main class="cs-main-content">
-        <section class="cs-hero-section">
-            <div class="cs-hero-content">
+    <main class="main-content">
+        <div class="hero-section">
+            <div class="hero-content">
                 <h1>Welcome to curesync</h1>
                 <p>Your trusted medical appointment booking system - connecting patients with healthcare professionals seamlessly</p>
-                <div class="cs-hero-buttons">
-                    <a href="{{ url_for('appointment') }}" class="cs-btn cs-btn-primary">Book Appointment</a>
-                    <a href="{{ url_for('doctors') }}" class="cs-btn cs-btn-secondary">View Doctors</a>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('appointment') }}" class="btn btn-primary">Book Appointment</a>
+                    <a href="{{ url_for('doctors') }}" class="btn btn-secondary">View Doctors</a>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="cs-features container">
-            <div class="cs-feature">
-                <h3>Easy Booking</h3>
-                <p>Book appointments with just a few clicks. Our intuitive interface makes scheduling medical consultations quick and hassle-free.</p>
-            </div>
-            <div class="cs-feature">
-                <h3>Expert Doctors</h3>
-                <p>Connect with qualified medical professionals across various specialties. All our doctors are verified and experienced.</p>
-            </div>
-            <div class="cs-feature">
-                <h3>Secure Payment</h3>
-                <p>Safe and secure payment processing with multiple payment options. Your financial information is always protected.</p>
-            </div>
-        </section>
-
-        <section class="cs-stats-section">
-            <div class="container cs-stats-grid">
-                <div class="cs-stat-item">
-                    <h3>500+</h3>
-                    <p>Qualified Doctors</p>
+        <div class="container">
+            <div class="features">
+                <div class="feature">
+                    <h3>Easy Booking</h3>
+                    <p>Book appointments with just a few clicks. Our intuitive interface makes scheduling medical consultations quick and hassle-free.</p>
                 </div>
-                <div class="cs-stat-item">
-                    <h3>10,000+</h3>
-                    <p>Happy Patients</p>
+                <div class="feature">
+                    <h3>Expert Doctors</h3>
+                    <p>Connect with qualified medical professionals across various specialties. All our doctors are verified and experienced.</p>
                 </div>
-                <div class="cs-stat-item">
-                    <h3>50+</h3>
-                    <p>Medical Specialties</p>
-                </div>
-                <div class="cs-stat-item">
-                    <h3>24/7</h3>
-                    <p>Emergency Support</p>
+                <div class="feature">
+                    <h3>Secure Payment</h3>
+                    <p>Safe and secure payment processing with multiple payment options. Your financial information is always protected.</p>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="cs-emergency-section container">
-            <h3>🚨 Emergency Services Available</h3>
-            <p>For medical emergencies, call our 24/7 hotline</p>
-            <div class="cs-emergency-number">📞 911-MEDBOOK</div>
-            <p>Our emergency response team is ready to assist you</p>
-        </section>
-
-        <section class="cs-services-section container">
-            <h2 class="cs-section-title">Our Medical Services</h2>
-            <div class="cs-services-grid">
-                <div class="cs-service-card">
-                    <h4>General Medicine</h4>
-                    <p>Comprehensive primary care services including routine check-ups, preventive care, and treatment of common illnesses.</p>
-                </div>
-                <div class="cs-service-card">
-                    <h4>Cardiology</h4>
-                    <p>Heart health specialists providing diagnosis and treatment for cardiovascular conditions and heart diseases.</p>
-                </div>
-                <div class="cs-service-card">
-                    <h4>Pediatrics</h4>
-                    <p>Specialized medical care for infants, children, and adolescents with experienced pediatric doctors.</p>
-                </div>
-                <div class="cs-service-card">
-                    <h4>Orthopedics</h4>
-                    <p>Expert care for bone, joint, and muscle conditions including sports injuries and arthritis treatment.</p>
-                </div>
-                <div class="cs-service-card">
-                    <h4>Dermatology</h4>
-                    <p>Complete skin care services including treatment of skin conditions, cosmetic procedures, and skin cancer screening.</p>
-                </div>
-                <div class="cs-service-card">
-                    <h4>Mental Health</h4>
-                    <p>Professional counseling and psychiatric services to support your mental health and emotional well-being.</p>
+        <div class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h3>500+</h3>
+                        <p>Qualified Doctors</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>10,000+</h3>
+                        <p>Happy Patients</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>50+</h3>
+                        <p>Medical Specialties</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>24/7</h3>
+                        <p>Emergency Support</p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="cs-feedback-section container">
-            <h2 class="cs-section-title">💬 Doctor Feedback</h2>
-            <p>Share your experience with doctors. Help others choose better!</p>
-            <a href="{{ url_for('feedback') }}" class="cs-btn cs-btn-primary">Give Feedback</a>
-        </section>
+        <div class="container">
+            <div class="emergency-section">
+                <h3>🚨 Emergency Services Available</h3>
+                <p>For medical emergencies, call our 24/7 hotline</p>
+                <div class="emergency-number">📞 911-MEDBOOK</div>
+                <p>Our emergency response team is ready to assist you</p>
+            </div>
 
-        <section class="cs-testimonials-section container">
-            <h2 class="cs-section-title">What Our Patients Say</h2>
-            <div class="cs-testimonials-grid">
-                <div class="cs-testimonial">
-                    <p class="cs-testimonial-text">"MedBook made it so easy to find and book an appointment with a specialist. The entire process was smooth and professional."</p>
-                    <p class="cs-testimonial-author">- Sarah Johnson</p>
-                </div>
-                <div class="cs-testimonial">
-                    <p class="cs-testimonial-text">"I love how I can book appointments online and receive reminders. The doctors are excellent and the service is top-notch."</p>
-                    <p class="cs-testimonial-author">- Michael Chen</p>
-                </div>
-                <div class="cs-testimonial">
-                    <p class="cs-testimonial-text">"The emergency service helped me when I needed it most. Quick response and professional care. Highly recommended!"</p>
-                    <p class="cs-testimonial-author">- Emma Rodriguez</p>
+            <div class="services-section">
+                <h2 class="section-title">Our Medical Services</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h4>General Medicine</h4>
+                        <p>Comprehensive primary care services including routine check-ups, preventive care, and treatment of common illnesses.</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Cardiology</h4>
+                        <p>Heart health specialists providing diagnosis and treatment for cardiovascular conditions and heart diseases.</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Pediatrics</h4>
+                        <p>Specialized medical care for infants, children, and adolescents with experienced pediatric doctors.</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Orthopedics</h4>
+                        <p>Expert care for bone, joint, and muscle conditions including sports injuries and arthritis treatment.</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Dermatology</h4>
+                        <p>Complete skin care services including treatment of skin conditions, cosmetic procedures, and skin cancer screening.</p>
+                    </div>
+                    <div class="service-card">
+                        <h4>Mental Health</h4>
+                        <p>Professional counseling and psychiatric services to support your mental health and emotional well-being.</p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section class="cs-cta-section container">
-            <h2>Ready to Get Started?</h2>
-            <p>Join thousands of satisfied patients who trust MedBook for their healthcare needs</p>
-            <a href="{{ url_for('appointment') }}" class="cs-btn cs-btn-primary">Book Your Appointment Today</a>
-        </section>
-
-        <section class="cs-contact-section container">
-            <h2 class="cs-section-title">Contact Information</h2>
-            <div class="cs-contact-grid">
-                <div class="cs-contact-item">
-                    <h4>📞 Phone</h4>
-                    <p>+1 (555) 123-4567</p>
-                    <p>Monday - Friday: 8AM - 8PM</p>
-                </div>
-                <div class="cs-contact-item">
-                    <h4>📧 Email</h4>
-                    <p>info@medbook.com</p>
-                    <p>support@medbook.com</p>
-                </div>
-                <div class="cs-contact-item">
-                    <h4>📍 Location</h4>
-                    <p>123 Medical Center Drive</p>
-                    <p>Healthcare City, HC 12345</p>
-                </div>
-                <div class="cs-contact-item">
-                    <h4>⏰ Hours</h4>
-                    <p>Mon-Fri: 6AM - 10PM</p>
-                    <p>Sat-Sun: 8AM - 6PM</p>
+        <div class="testimonials-section">
+            <div class="container">
+                <h2 class="section-title">What Our Patients Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial">
+                        <p class="testimonial-text">"MedBook made it so easy to find and book an appointment with a specialist. The entire process was smooth and professional."</p>
+                        <p class="testimonial-author">- Sarah Johnson</p>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">"I love how I can book appointments online and receive reminders. The doctors are excellent and the service is top-notch."</p>
+                        <p class="testimonial-author">- Michael Chen</p>
+                    </div>
+                    <div class="testimonial">
+                        <p class="testimonial-text">"The emergency service helped me when I needed it most. Quick response and professional care. Highly recommended!"</p>
+                        <p class="testimonial-author">- Emma Rodriguez</p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+
+        <div class="cta-section">
+            <div class="container">
+                <h2>Ready to Get Started?</h2>
+                <p>Join thousands of satisfied patients who trust MedBook for their healthcare needs</p>
+                <a href="{{ url_for('appointment') }}" class="btn btn-primary">Book Your Appointment Today</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="contact-info">
+                <h2 class="section-title">Contact Information</h2>
+                <div class="contact-grid">
+                    <div class="contact-item">
+                        <h4>📞 Phone</h4>
+                        <p>+1 (555) 123-4567</p>
+                        <p>Monday - Friday: 8AM - 8PM</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>📧 Email</h4>
+                        <p>info@medbook.com</p>
+                        <p>support@medbook.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>📍 Location</h4>
+                        <p>123 Medical Center Drive</p>
+                        <p>Healthcare City, HC 12345</p>
+                    </div>
+                    <div class="contact-item">
+                        <h4>⏰ Hours</h4>
+                        <p>Mon-Fri: 6AM - 10PM</p>
+                        <p>Sat-Sun: 8AM - 6PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <footer class="cs-footer">
+    <footer class="footer">
         <div class="container">
             <p>&copy; 2024 MedBook. All rights reserved. | Privacy Policy | Terms of Service | Accessibility</p>
         </div>

@@ -171,14 +171,7 @@ def is_admin():
 
 @app.route('/')
 def home():
-    conn = sqlite3.connect('yourdb.db')
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM doctors")
-    doctors = cursor.fetchall()
-    conn.close()
-    return render_template('home.html', doctors=doctors)
-
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -220,39 +213,6 @@ def register():
             conn.close()
 
     return render_template('login.html')
-
-@app.route('/feedback/<int:doctor_id>', methods=['GET', 'POST'])
-def feedback(doctor_id):
-    conn = sqlite3.connect('yourdb.db')
-    cursor = conn.cursor()
-
-    # Fetch doctor info first (this should be outside POST block too)
-    cursor.execute("SELECT name FROM doctors WHERE id = ?", (doctor_id,))
-    doctor = cursor.fetchone()
-
-    if not doctor:
-        conn.close()
-        return "Doctor not found", 404
-
-    if request.method == 'POST':
-        rating = request.form['rating']
-        comments = request.form['comments']
-        user_id = session.get('user_id')
-
-        if not user_id:
-            conn.close()
-            return redirect(url_for('login'))  # Ensure user is logged in
-
-        cursor.execute('''
-            INSERT INTO feedback (user_id, doctor_id, rating, comments)
-            VALUES (?, ?, ?, ?)
-        ''', (user_id, doctor_id, rating, comments))
-        conn.commit()
-        conn.close()
-        return redirect(url_for('user_dashboard'))  # Redirect after feedback
-
-    conn.close()
-    return render_template('feedback.html', doctor={'id': doctor_id, 'name': doctor[0]})
 
 
 @app.route('/logout')
