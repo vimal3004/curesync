@@ -18,30 +18,15 @@
                         <th>Time</th>
                         <th>Reason</th>
                         <th>Room</th>
-                        <th>Upload Notes</th>
-                        <th>View Notes</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for a in appointments %}
                     <tr>
-                        <td>{{ a.user_name }}</td>
+                        <td>{{ a.patient_name }}</td>
                         <td>{{ a.appointment_time }}</td>
                         <td>{{ a.notes or '-' }}</td>
-                        <td>{{ a.room_number }}</td>
-                        <td>
-                            <form method="POST" action="{{ url_for('upload_notes', appointment_id=a.id) }}" enctype="multipart/form-data" class="doctor-dashboard-form">
-                                <input type="file" name="notes_file" accept=".pdf,.jpg,.png" class="doctor-dashboard-file">
-                                <button type="submit" class="doctor-dashboard-upload-btn">Upload</button>
-                            </form>
-                        </td>
-                        <td>
-                            {% if a.doctor_notes %}
-                                <a href="{{ url_for('static', filename='uploads/' ~ a.doctor_notes) }}" target="_blank" class="doctor-dashboard-view-link">View</a>
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ a.room_number or '-' }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

@@ -54,6 +54,15 @@ def init_db():
         )
     ''')
 
+    cursor.execute("""
+CREATE TABLE IF NOT EXISTS reminders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    medication TEXT NOT NULL,
+    time TEXT NOT NULL
+)
+""")
+
     
     # In init_db() in app.py
     cursor.execute('''
@@ -370,6 +379,67 @@ def process_payment():
     flash('Payment successful! Your appointment is confirmed.')
     return redirect(url_for('dashboard'))
 
+
+
+
+@app.route("/calendar")
+def calendar():
+    con = sqlite3.connect("database.db")
+    cur = con.cursor()
+    cur.execute("SELECT name, available_days, available_time FROM doctors")
+    data = cur.fetchall()
+    con.close()
+
+    slots = [{"doctor": d[0], "day": d[1], "time": d[2]} for d in data]
+    return render_template("calendar.html", slots=slots)
+
+@app.route("/profile")
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    con = sqlite3.connect("database.db")
+    cur = con.cursor()
+
+    # Get user info
+    cur.execute("SELECT name, email, phone, created_at FROM users WHERE id = ?", (user_id,))
+    user_row = cur.fetchone()
+
+    if user_row:
+        user = {
+            'name': user_row[0],
+            'email': user_row[1],
+            'phone': user_row[2],
+            'created_at': datetime.strptime(user_row[3], '%Y-%m-%d %H:%M:%S')  # or change the format to match your DB
+        }
+    else:
+        user = None
+
+    # Appointments
+    cur.execute("""
+    SELECT doctors.name, appointments.appointment_date, appointments.appointment_time
+    FROM appointments
+    JOIN doctors ON appointments.doctor_id = doctors.id
+    WHERE appointments.user_id = ?
+    ORDER BY appointments.appointment_date DESC
+    """, (user_id,))
+    appointment_rows = cur.fetchall()
+
+    appointments = [
+        {
+            "doctor": row[0],
+            "date": row[1],
+            "time": row[2],
+            "status": "completed"  # Optional: if you want to assign dummy status
+        } for row in appointment_rows
+    ]
+
+    con.close()
+
+    return render_template("profile.html", user=user, appointments=appointments)
+
+
 @app.route('/token_queue', methods=['GET', 'POST'])
 def token_queue():
     if not is_logged_in() or not is_admin():
@@ -479,14 +549,22 @@ def doctor_login():
 
 @app.route('/doctor/dashboard')
 def doctor_dashboard():
+    # Check if the doctor is logged in
     if 'doctor_id' not in session:
         return redirect(url_for('doctor_login'))
 
+    # Get today's date
     today = datetime.today().date()
 
+    # Connect to DB and fetch appointments with patient name and room number
     conn = get_db_connection()
     appointments = conn.execute('''
-        SELECT a.*, u.name AS patient_name, r.room_number
+        SELECT 
+            a.id,
+            a.appointment_time,
+            a.notes,
+            u.name AS patient_name,
+            r.room_number
         FROM appointments a
         JOIN users u ON a.user_id = u.id
         LEFT JOIN rooms r ON a.room_id = r.id
@@ -495,6 +573,7 @@ def doctor_dashboard():
     ''', (session['doctor_id'], today)).fetchall()
     conn.close()
 
+    # Render the doctor dashboard with appointment data
     return render_template('doctor_dashboard.html', appointments=appointments)
 @app.route('/doctor/upload_notes/<int:appointment_id>', methods=['POST'])
 def upload_notes(appointment_id):

@@ -14,8 +14,13 @@
                 <a href="{{ url_for('dashboard') }}">Dashboard</a>
                 <a href="{{ url_for('appointment') }}">Book Appointment</a>
                 <a href="{{ url_for('doctors') }}">Doctors</a>
-                <span>Welcome, {{ session.user_name }}!</span>
+                
+                
+                
+                <a href="/calendar">Doctor Availability</a><br>
+                <a href="/profile">User Profile</a>
                 <a href="{{ url_for('logout') }}">Logout</a>
+                
             </div>
         </div>
     </nav>

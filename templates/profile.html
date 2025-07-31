@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - MedBook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
+            color: #333;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.3)"/></svg>');
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            color: #333;
+        }
+
+        .user-info {
+            position: relative;
+            z-index: 1;
+            opacity: 0.8;
+            color: #555;
+        }
+
+        .profile-content {
+            padding: 40px 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .appointment-card {
+            background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #87CEEB;
+            transition: all 0.3s ease;
+        }
+
+        .appointment-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(135, 206, 235, 0.3);
+        }
+
+        .appointment-card strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-pending { background: #fff3e0; color: #f57c00; }
+        .status-confirmed { background: #e8f5e8; color: #2e7d32; }
+        .status-completed { background: #e3f2fd; color: #1976d2; }
+        .status-cancelled { background: #ffebee; color: #d32f2f; }
+
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%);
+            color: #333;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #98FB98 0%, #90EE90 100%);
+            color: #333;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #87CEEB;
+            border: 2px solid #87CEEB;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .personal-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 3px solid #87CEEB;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+                padding: 20px 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .personal-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(135, 206, 235, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-circle" style="width: 60px; height: 60px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-circle" style="width: 80px; height: 80px; top: 20%; right: 15%; animation-delay: 2s;"></div>
+        <div class="floating-circle" style="width: 40px; height: 40px; bottom: 30%; left: 20%; animation-delay: 4s;"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-brand">MedBook</h1>
+            <div class="nav-links">
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('appointment') }}">Book Appointment</a>
+                <a href="{{ url_for('doctors') }}">Doctors</a>
+                <a href="/calendar">Doctor Availability</a>
+                <a href="/profile">Welcome, vimal!</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="header">
+                <div class="profile-avatar">👤</div>
+                <h1>My Profile</h1>
+                <div class="user-info">
+                    <p>Welcome to your MedBook profile</p>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <!-- Personal Information Section -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon">👤</span>
+                        Personal Information
+                    </h2>
+                    <div class="personal-info">
+                        <div class="info-item">
+                            <div class="info-label">Full Name</div>
+                            <div class="info-value">vimal</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Email</div>
+                            <div class="info-value">23ad068@kpriet.ac.in</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">9043599540</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Member Since</div>
+                            <div class="info-value">July 2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appointment Statistics -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="section-icon">📊</span>
+                        Appointment Statistics
+                    </h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number">9</span>
+                            <span class="stat-label">Total Appointments</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">3</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">6</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="section full-width">
+                    <h2 class="section-title">
+                        <span class="section-icon">⚡</span>
+                        Quick Actions
+                    </h2>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('appointment') }}" class="btn btn-primary">📅 Book New Appointment</a>
+                        <a href="{{ url_for('doctors') }}" class="btn btn-secondary">👨‍⚕️ Browse Doctors</a>
+                        <a href="/calendar" class="btn btn-outline">🗓️ Check Availability</a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline">🏠 Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.appointment-card, .info-item');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Animate stat numbers
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const finalValue = parseInt(stat.textContent);
+                let currentValue = 0;
+                const increment = finalValue / 20;
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        stat.textContent = finalValue;
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(currentValue);
+                    }
+                }, 50);
+            });
+        });
+    </script>
+</body>
+</html>
